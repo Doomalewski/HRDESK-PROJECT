@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+<h1>Log in</h1>
+<form method="post" class="d-flex flex-column justify-content-center align-items-center">
+    <div class="form-floating form-floating-outlined m-2">
+        <input type="text" name="username" class="form-control text-white bg-transparent border-0 shadow-none" id="username"
+               placeholder="username" autocomplete="off">
+        <label for="username">Username</label>
+    </div>
+    <div class ="form-floating form-floating-outlined m-2">
+        <input type="password"class="form-control text-white bg-transparent border-0 shadow-none" name="password" placeholder="Type Password" />
+        <label for="password">Password</label>
+    </div>
+    <div></div>
+    <button type="submit" class="btn btn-outline-primary btn-lg m-3">
+        Log in
+    </button>
+</form>

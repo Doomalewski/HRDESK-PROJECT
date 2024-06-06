@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+<div class="card">
+<div class="main-content-center">
+    <h2>Upload Profile Picture (.jpg)</h2>
+    <form asp-action="UploadFile" asp-controller="File" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="file" class="form-control" id="file" name="file" />
+        </div>
+            <div class="main-content-center">
+            <button type="submit" class="btn btn-outline-success mt-4">Upload</button>
+            </div>
+    </form>
+</div>
+</div>

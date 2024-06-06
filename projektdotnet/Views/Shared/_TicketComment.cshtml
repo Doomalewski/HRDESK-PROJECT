@@ -1,0 +1,7 @@
+﻿@model projektdotnet.Models.TicketComment
+
+    <div class="card-left-align m-2">
+    @await Html.PartialAsync("_EmployeeDetails", Model.Employee)
+    <div class="text-white">@Model.Description</div>
+        <div class="text-white">@Model.CreationDate</div>
+    </div>

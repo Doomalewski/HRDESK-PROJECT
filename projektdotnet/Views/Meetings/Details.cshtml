@@ -1,0 +1,68 @@
+﻿@model projektdotnet.Models.Meeting
+
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="main-content-center">
+    <h1 class="text-center" style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Details</h1>
+    <div class="card-container">
+        <div class="card-left-align">
+            <dl class="row">
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    Title
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Model.Title
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    Description
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Model.Description
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    Starting at
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Model.StartingTime
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    Ending at
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Model.EndingTime
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    Room
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @await Html.PartialAsync("_RoomDetails", Model.room)
+                </dd>
+            </dl>
+            <div class="text-white mb-1 mt-1">Participants</div>
+            <div class="card-text text-white flex-column">
+
+            @foreach(var participant in Model.Participants)
+            {
+                    @await Html.PartialAsync("_EmployeeDetails",participant);
+            }
+            </div>
+        </div>
+
+
+    </div>
+    <a asp-action="Index" class="btn btn-outline-primary btn-lg m-3">Back to List</a>
+    <form asp-action="LeaveMeeting" asp-route-id="@Model.MeetingId" method="post">
+        <button type="submit" class="btn btn-outline-danger btn-lg m-3">Leave meeting</button>
+    </form>
+
+
+</div>

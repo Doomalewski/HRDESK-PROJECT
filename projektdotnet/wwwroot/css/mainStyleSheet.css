@@ -1,0 +1,156 @@
+﻿body {
+    display: grid;
+    grid-template-rows: auto 1fr; /* Creates rows where the first row fits content, and the second row takes remaining space */
+    align-items: start; /* Aligns items to the start (top) */
+    justify-content: center; /* Optionally center the content horizontally */
+    background: radial-gradient(circle at 100%, #333, #333 50%, #A0E9FF 75%, #333 75%);
+}
+    header {
+    width: 100%;
+    background: rgba(0,0,0, 0.5);
+
+}
+.main-size {
+    height: 700px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.card {
+    padding: 30px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0, 0.5); /* Szary kolor z 50% przezroczystością */
+    border: 0px;
+    border-radius: 20px; /* Zaokrąglone brzegi */
+    padding: 50px; /* Opcjonalne: Dodaje wewnętrzne odstępy, aby zawartość nie była zbyt blisko krawędzi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcjonalne: Dodaje delikatny cień dla lepszego efektu wizualnego */
+}
+.main-card {
+    padding: 50px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0, 0.5); /* Szary kolor z 50% przezroczystością */
+    border: 0px;
+    border-radius: 20px; /* Zaokrąglone brzegi */
+    padding: 150px; /* Opcjonalne: Dodaje wewnętrzne odstępy, aby zawartość nie była zbyt blisko krawędzi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcjonalne: Dodaje delikatny cień dla lepszego efektu wizualnego */
+}
+.logout-card {
+    color:rgb(46, 159, 224);
+    padding: 12px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(51, 51, 51); /* Szary kolor z 50% przezroczystością */
+    border: 0px;
+    border-radius: 10px; /* Zaokrąglone brzegi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcjonalne: Dodaje delikatny cień dla lepszego efektu wizualnego */
+}
+.HRDESK-card {
+    color: rgba(46, 159, 224);
+    padding: 12px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(147, 208, 223); /* Szary kolor z 50% przezroczystością */
+    border: 0px;
+    border-radius: 10px; /* Zaokrąglone brzegi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcjonalne: Dodaje delikatny cień dla lepszego efektu wizualnego */
+}
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    width: 100%;
+}
+.main-content-center {
+    display: flex;
+    flex-direction: column; /* Ustawienie elementów jeden pod drugim */
+    align-items: center; /* Wyśrodkowanie elementów w poziomie */
+    gap: 10px; /* Odstęp między elementami */
+}
+.card-left-align {
+    padding: 30px !important;
+    display: flex;
+    flex-direction: column; /* Ustawia elementy jeden pod drugim */
+    justify-content: flex-start; /* Wyrównuje elementy do góry */
+    align-items: flex-start; /* Wyrównuje elementy do lewej strony */
+    background-color: rgba(0, 0, 0, 0.5); /* Szary kolor z 50% przezroczystością */
+    border: 0px;
+    border-radius: 20px; /* Zaokrąglone brzegi */
+    padding: 50px; /* Dodaje wewnętrzne odstępy */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Dodaje delikatny cień dla lepszego efektu wizualnego */
+}
+.main-center-top-align {
+    padding-block-start:100px !important;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+.card-text {
+    padding: 10px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0, 0.8); /* Szary kolor z 50% przezroczystością */
+    border: 0px;
+    border-radius: 7px; /* Zaokrąglone brzegi */
+    padding: 10px; /* Opcjonalne: Dodaje wewnętrzne odstępy, aby zawartość nie była zbyt blisko krawędzi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcjonalne: Dodaje delikatny cień dla lepszego efektu wizualnego */
+}
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction:column;
+}
+.margin-important{
+   margin-left:10px !important;
+   margin-right:10px !important;
+}
+.width-100{
+    width:100% !important;
+}
+.form-floating {
+    --bs-form-field-color: rgb(46, 159, 224);
+    --bs-form-field-bg: var(--bs-surface-bg);
+    --bs-form-field-hover-bg: var(--bs-surface-bg-hover);
+    --bs-form-field-border-color: var(--bs-body-color);
+    --bs-form-field-active-border-color: var(--bs-primary-hover);
+    --bs-form-field-border-radius: var(--bs-border-radius);
+    --bs-form-select-indicator: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23495057' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+    --bs-form-select-checkmark: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e);
+    position: relative;
+    width: 100%;
+}
+    .form-floating > .dropdown .dropdown-item.active,
+    .form-floating > .dropdown .dropdown-item[aria-selected=true]: {
+        color: var(--bs-dropdown-link-active-color);
+        background-color: rgba(0,0,0, 0.8);
+    }
+    .form-floating > .dropdown .dropdown-item.active,
+    .form-floating > .dropdown .dropdown-item[aria-selected=false] {
+        color: var(--bs-dropdown-link-active-color);
+        background-color: rgba(0,0,0, 0.8);
+    }
+    .form-floating.form-floating-outlined > textarea.form-control:focus, .form-floating.form-floating-outlined > textarea.form-control:not(:placeholder-shown) {
+        padding: 0 .75rem;
+        padding-top: 7px;
+        padding-right: 0.75rem;
+        padding-bottom: 0px;
+        padding-left: 0.75rem;
+    }
+
+.header-style {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensures the header stays above other elements */
+}

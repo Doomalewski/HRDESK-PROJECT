@@ -1,0 +1,19 @@
+﻿@model IEnumerable<projektdotnet.Models.Room>
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="card">
+    <h1 class="text-center" style="font-size: 4em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Rooms</h1>
+
+    <a type="submit" class="btn btn-outline-primary btn-lg margin-important m-3 " asp-action="Create" asp-controller="Rooms">
+        Add room
+    </a>
+    @foreach(Room item in Model)
+    {
+        @await Html.PartialAsync("_RoomDetails", item)
+
+    }
+</div>

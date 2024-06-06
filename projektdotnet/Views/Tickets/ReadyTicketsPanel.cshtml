@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+<div class="card">
+        <h1 class="text-center" style="font-size: 4em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Open ready ticket</h1>
+
+    <form method="post">
+        <div class="main-content-center">
+            <div class="m-3">
+                <input class="form-check-input" type="checkbox" id="ReceiverChosen" name="ReceiverChosen" value="true" onchange="toggleEmployeeList()" />
+                <label class="text-white" for="ReceiverChosen">I want to choose resolver</label>
+            </div>
+            <div id="employeeList" class="form-group" style="display: none;">
+                <label class="text-white" for="ReceiverId">Choose resolver:</label>
+                <select class="form-control" id="ReceiverId" name="ReceiverId" asp-items="@(ViewData["Receivers"] as SelectList)">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+                <button type="submit" class="btn btn-outline-success btn-lg m-2" name="id" value="1">Delayed Payroll</button>
+                <button type="submit" class="btn btn-outline-success btn-lg m-2" name="id" value="2">Discount Card Problem</button>
+                <button type="submit" class="btn btn-outline-success btn-lg m-2" name="id" value="3">Toilet not Working</button>
+                <button type="submit" class="btn btn-outline-success btn-lg m-2" name="id" value="4">Mobbing</button>
+            <a class="btn btn-outline-primary btn-lg m-3" asp-action="Index">Back to List</a>
+
+
+        </div>
+    </form>
+
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        function toggleEmployeeList() {
+            var employeeList = document.getElementById('employeeList');
+            var checkbox = document.getElementById('ReceiverChosen');
+            employeeList.style.display = checkbox.checked ? 'block' : 'none';
+        }
+    </script>
+}

@@ -1,0 +1,24 @@
+﻿@model List<projektdotnet.Models.Meeting>
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+<div class="main-content-center">
+    <div class="main-card">
+        <a type="submit" class="btn btn-outline-primary btn-lg margin-important" asp-action="Index" asp-controller="Tickets">
+            Tickets
+        </a>
+        <a type="submit" class="btn btn-outline-primary btn-lg margin-important" asp-action="Index" asp-controller="Meetings">
+            Meetings
+        </a>
+        <a type="submit" class="btn btn-outline-primary btn-lg margin-important" asp-action="Create" asp-controller="Opinions">
+            Add Opinion
+        </a>
+    </div>
+    <div>
+        <h1 class="text-center mb-2" style="font-size: 2em">Your today's meetings</h1>
+        @foreach(var meeting in Model)
+        {
+            @await Html.PartialAsync("_MeetingDetails",  meeting);
+        }
+    </div>
+</div>

@@ -1,0 +1,8 @@
+﻿@model projektdotnet.Models.Employee
+<a asp-controller="Employees" asp-action="EmployeeDetails" asp-route-id="@Model.EmployeeId" class="card-text text-decoration-none text-white">
+    @Model.Name @Model.Surname @Model.EmployeeId <img id="profilePicture"
+                                                      src="@($"/Files/{Model.Login}profilepicture.jpg")"
+                                                      alt="Profile Picture"
+                                                      style="width: 30px; height: 30px; border-radius:50%; margin-left:10px"
+                                                      onerror="this.onerror=null; this.src='/Files/defaultprofilepicture.jpg';" />
+</a>

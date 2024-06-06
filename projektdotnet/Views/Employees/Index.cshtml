@@ -1,0 +1,54 @@
+﻿@model IEnumerable<projektdotnet.Models.Employee>
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="main-content-center ">
+
+    <h1 style="font-size: 6em">Employees</h1>
+    <p>
+        <a class="btn btn-outline-primary btn-lg m-3" asp-action="Create">Create New</a>
+    </p>
+    <div class="card">
+        <table class="table table-sm" style="background-color:transparent!important">
+            <thead>
+                <tr>
+                    <th class="text-white" style="background-color:transparent!important">
+                        @Html.DisplayNameFor(model => model.Login)
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                        @Html.DisplayNameFor(model => model.Surname)
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-white" style="background-color:transparent!important">
+                            @Html.DisplayFor(modelItem => item.Login)
+                        </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                            @Html.DisplayFor(modelItem => item.Surname)
+                        </td>
+
+                        <td class="text-white" style="background-color:transparent!important">
+                            <a class="btn btn-outline-primary" asp-action="EmployeeDetails" asp-route-id="@item.EmployeeId">Details</a>
+                            <a class="btn btn-outline-warning" asp-action="EmployeeDelete" asp-route-id="@item.EmployeeId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

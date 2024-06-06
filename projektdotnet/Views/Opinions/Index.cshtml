@@ -1,0 +1,29 @@
+﻿@model IEnumerable<projektdotnet.Models.Opinion>
+
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+
+<div class="main-content-center">
+    <h1 class="text-center" style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Opinions</h1>
+    <div class="card-left-align">
+        @foreach (var item in Model)
+        {
+            <div class="card-left-align m-2">
+            @if(item.Employee!=null)
+            {
+                @await Html.PartialAsync("_EmployeeDetails", item.Employee)
+                <p class="text-white">Title: @item.Title</p>
+                    <div class="text-white">Description: @item.Description</div>
+            }
+            else
+            {
+                <div class="card-text text-white">Anonymous</div>
+                    <p class="text-white">Title: @item.Title</p>
+                    <div class="text-white">Description:  @item.Description</div>
+            }
+                <a asp-action="Delete" asp-route-id="@item.OpinionId" class="btn btn-outline-danger mt-2">Delete</a>
+            </div>
+        }
+    </div>
+</div>

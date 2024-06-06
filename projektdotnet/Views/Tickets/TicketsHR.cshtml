@@ -1,0 +1,117 @@
+﻿@model IEnumerable<projektdotnet.Models.Ticket>
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+<div class="main-content-center ">
+    <h1 style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Tickets to handle</h1>
+    <div class="card">
+        <table class="table table-sm" style="background-color:transparent!important">
+        <thead>
+            <tr>
+                    <th class="text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.TicketId)
+                </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                    Sent by
+                </th>
+                <th class="text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.Category)
+                </th >
+                    <th class="text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                        @Html.DisplayNameFor(model => model.Priority)
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.CreationDate)
+                </th>
+                    <th class="text-white" style="background-color:transparent!important"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                        <td class="text-white" style="background-color:transparent!important">
+                        @Html.DisplayFor(modelItem => item.TicketId)
+                    </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                        @if (item.SenderId == null)
+                        {
+                            @:Deleted User
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Sender.Name)
+                            @:
+                            @Html.DisplayFor(modelItem => item.Sender.Surname)
+                            @:id:@Html.DisplayFor(modelItem => item.SenderId)
+                        }
+                    </td>
+                        <td class="text-white"  style="background-color:transparent!important">
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td class="text-white" style="background-color:transparent!important">
+                            @switch (item.Status)
+                            {
+                                case projektdotnet.Models.TicketStatus.Sent:
+                                    <div class="card-text text-primary"><strong>Sent</strong></div>
+                                    break;
+                                case projektdotnet.Models.TicketStatus.InProcess:
+                                    <span class="card-text text-warning"><strong>In Process</strong></span>
+                                    break;
+                                case projektdotnet.Models.TicketStatus.Resolved:
+                                    <span class="card-text text-success"><strong>Resolved</strong></span>
+                                    break;
+                                case projektdotnet.Models.TicketStatus.NeedMoreInformation:
+                                    <span class="card-text text-danger"><strong>Need More Information</strong></span>
+                                    break;
+                                default:
+                                    <span class="card-text text-secondary"><strong>Unknown Status</strong></span>
+                                    break;
+                            }
+                    </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                            @switch (item.Priority)
+                            {
+                                case projektdotnet.Models.TicketPriority.Normal:
+                                    <div class="card-text text-primary"><strong>Normal</strong></div>
+                                    break;
+                                case projektdotnet.Models.TicketPriority.High:
+                                    <span class="card-text text-warning"><strong>High</strong></span>
+                                    break;
+                                case projektdotnet.Models.TicketPriority.Low:
+                                    <span class="card-text text-success"><strong>Low</strong></span>
+                                    break;
+                                case projektdotnet.Models.TicketPriority.Emergency:
+                                    <span class="card-text text-danger"><strong>Emergency</strong></span>
+                                    break;
+                                default:
+                                    <span class="card-text text-secondary"><strong>Unknown Priority</strong></span>
+                                    break;
+                            }
+                        </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                        @Html.DisplayFor(modelItem => item.CreationDate)
+                    </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                        <a asp-action="Manage" asp-route-id="@item.TicketId" class="btn btn-outline-success">Manage </a>
+                        <a asp-action="Details" asp-route-id="@item.TicketId" class="btn btn-outline-primary">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.TicketId" class="btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+    <div class="card-left-align">
+        <a asp-action="ResolvedTickets" class="btn btn-outline-success">Manage resolved </a>
+
+        <h1 style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Stats:</h1>
+
+        <h3 style="text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Resolved so far: @ViewBag.resolvedTicketsCount </h3>
+        <h3 style="text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">% of all resolved: @ViewBag.partOfAllTicketsResolved </h3>
+
+    </div>
+</div>

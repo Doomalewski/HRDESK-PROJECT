@@ -1,0 +1,46 @@
+﻿@model projektdotnet.Models.Employee
+
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Employee Details";
+}
+<div class="main-content-center ">
+
+    <h1 style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">@Model.Name @Model.Surname</h1>
+    <div class="card">
+        <div>
+            <dl class="row">
+                <dt class="col-sm-10 text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.EmployeeId)
+                </dt>
+                <dd class="col-sm-10 text-white" style="background-color:transparent!important">
+                    @Html.DisplayFor(model => model.EmployeeId)
+                </dd>
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.Roles)
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @foreach (var role in Model.Roles)
+                    {
+                        <span>@role.Name</span>
+
+                        <br />
+                    }
+                </dd>
+
+            </dl>
+            <div>
+
+                <img id="profilePicture"
+                     src="@($"/Files/{Model.Login}profilepicture.jpg")"
+                     alt="Profile Picture"
+                     style="width: 100px; height: 100px;border-radius: 20px;"
+                     onerror="this.onerror=null; this.src='/Files/defaultprofilepicture.jpg';" />
+            </div>
+            <a asp-controller="File" asp-action="DownloadFile" asp-route-filepath="@ViewBag.PathToProfilePicture" class="btn btn-outline-primary m-2">Download profile picture</a>
+        </div>
+    </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Go back</a>
+</div>

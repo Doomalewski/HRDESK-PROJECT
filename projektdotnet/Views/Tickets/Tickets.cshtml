@@ -1,0 +1,67 @@
+﻿@model IEnumerable<projektdotnet.Models.Ticket>
+
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+
+
+<div class="main-content-center">
+    <h1 class="text-center" style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Your tickets</h1>
+        <a class="btn btn-outline-primary btn-lg m-1" asp-action="Create">Create new</a>
+    <a class="btn btn-outline-primary btn-lg" asp-action="ReadyTicketsPanel">Open ready ticket</a>
+
+    <div class="card-left-align">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="text-white" style="background-color:transparent!important">
+                        Category
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                        ID
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important">
+                        Status
+                    </th>
+                    <th class="text-white" style="background-color:transparent!important"></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td class="text-white" style="background-color:transparent!important">
+                            <a asp-action="Details" asp-route-id="@ticket.TicketId" class="text-white text-decoration-none">@ticket.Category</a>
+                        </td>
+                        <td class="text-white" style="background-color:transparent!important">@ticket.TicketId</td>
+                        <td class="text-white" style="background-color:transparent!important">
+                            @switch (ticket.Status)
+                            {
+                                case projektdotnet.Models.TicketStatus.Sent:
+                                    <div class="card-text text-primary"><strong>Sent</strong></div>
+                                    break;
+                                case projektdotnet.Models.TicketStatus.InProcess:
+                                    <span class="card-text text-warning"><strong>In Process</strong></span>
+                                    break;
+                                case projektdotnet.Models.TicketStatus.Resolved:
+                                    <span class="card-text text-success"><strong>Resolved</strong></span>
+                                    break;
+                                case projektdotnet.Models.TicketStatus.NeedMoreInformation:
+                                    <span class="card-text text-danger"><strong>Need More Information</strong></span>
+                                    break;
+                                default:
+                                    <span class="card-text text-secondary"><strong>Unknown Status</strong></span>
+                                    break;
+                            }
+                        </td>
+                        <td class="text-white" style="background-color:transparent!important">
+                        <a asp-action="Details" asp-route-id="@ticket.TicketId" class="btn btn-outline-primary" style="margin-left:10px;">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+ </div>
+

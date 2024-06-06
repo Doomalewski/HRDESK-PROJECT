@@ -1,0 +1,17 @@
+﻿@model IEnumerable<projektdotnet.Models.Meeting>
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Index";
+}
+<div class ="main-content-center">
+    <h1 class="text-center" style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Meetings</h1>
+    <a asp-action="Create" class="btn btn-outline-primary btn-lg m-3">Create New</a>
+    <div class="card-left-align">
+        @foreach(var item in Model)
+        {
+            <a asp-action="Details" asp-route-id="@item.MeetingId" class="card text-white text-decoration-none width-100 mb-2">@item.Title @item.StartingTime.ToShortDateString() </a>
+        }
+    </div>
+</div>

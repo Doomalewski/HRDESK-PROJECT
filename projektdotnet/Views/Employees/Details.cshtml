@@ -1,0 +1,60 @@
+﻿@model projektdotnet.Models.Employee
+@using System.IO;
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Employee Details";
+}
+<div class="main-content-center ">
+
+    <h1 style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">My Account</h1>
+    <div class="card">
+        <div>
+            <dl class="row">
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.EmployeeId)
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Html.DisplayFor(model => model.EmployeeId)
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.Surname)
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @Html.DisplayFor(model => model.Surname)
+                </dd>
+
+                <dt class="col-sm-3 text-white" style="background-color:transparent!important">
+                    @Html.DisplayNameFor(model => model.Roles)
+                </dt>
+                <dd class="col-sm-9 text-white" style="background-color:transparent!important">
+                    @foreach (var role in Model.Roles)
+                    {
+                        <span>@role.Name</span>
+
+                        <br />
+                    }
+                </dd>
+
+            </dl>
+            <div>
+                
+                <img id="profilePicture"
+                     src="@($"/Files/{Model.Login}profilepicture.jpg")"
+                     alt="Profile Picture"
+                     style="width: 100px; height: 100px; border-radius:20px;"
+                     onerror="this.onerror=null; this.src='/Files/defaultprofilepicture.jpg';" />
+            </div>
+        </div>
+    </div>
+    <a asp-controller="File" asp-action="UploadFile" class="btn btn-outline-primary">Change Profile Picture</a>
+</div>

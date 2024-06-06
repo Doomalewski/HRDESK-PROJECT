@@ -1,0 +1,66 @@
+﻿@model projektdotnet.Models.Meeting
+
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="row">
+    <div class="card m-3">
+        <h1 class="text-center" style="font-size: 4em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Meeting</h1>
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating form-floating-outlined m-2">
+                <label asp-for="RoomId" class="control-label text-white">Room</label>
+                <select asp-for="RoomId" class="form-select" asp-items="ViewBag.RoomId"></select>
+            </div>
+            <div class="form-floating form-floating-outlined m-2">
+                <label asp-for="Title" class="control-label text-white">Title</label>
+                <input asp-for="Title" class="form-control text-white bg-transparent border-0 shadow-none" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-floating form-floating-outlined m-2">
+                <label asp-for="Description" class="control-label text-white ">Description</label>
+                <input asp-for="Description" class="form-control text-white bg-transparent border-0 shadow-none" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-floating form-floating-outlined m-2">
+                <label asp-for="StartingTime" class="control-label text-white">Starting at</label>
+                <input asp-for="StartingTime" class="form-control text-white bg-transparent border-0 shadow-none" />
+                <span asp-validation-for="StartingTime" class="text-danger"></span>
+            </div>
+            <div class="form-floating form-floating-outlined m-2">
+                <label asp-for="EndingTime" class="control-label text-white">Ending at</label>
+                <input asp-for="EndingTime" class="form-control text-white bg-transparent border-0 shadow-none" />
+                <span asp-validation-for="EndingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="text-white">
+                    <strong>
+                        Select Employees:
+                    </strong>
+                </label>
+                @foreach (var employee in ViewBag.AllEmployees)
+                {
+                    <div>
+                        <input class="form-check-input" type="checkbox" name="selectedEmployees" value="@employee.EmployeeId" />
+                        <label class="form-check-label text-white" for="checkbox1">@employee.Name @employee.Surname</label>
+                        <img id="profilePicture"
+                             src="@($"/Files/{employee.Login}profilepicture.jpg")"
+                             alt="Profile Picture"
+                             style="width: 30px; height: 30px; border-radius:20px;"
+                             onerror="this.onerror=null; this.src='/Files/defaultprofilepicture.jpg';" />
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <a class="btn btn-outline-primary btn-lg m-3" asp-action="Index">Back to List</a>
+                <input type="submit" value="Create" class="btn btn-outline-success btn-lg m-3" />
+            </div>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,118 @@
+﻿@model projektdotnet.Models.Ticket
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Manage Ticket";
+}
+
+
+<div class="main-content-center">
+    <h1 style="font-size: 6em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Manage</h1>
+    <hr />
+    <form asp-action="Manage" method="post" class="card text-white" >
+        @Html.HiddenFor(model => model.TicketId)
+        @Html.HiddenFor(model => model.Description) <!-- Hidden field to preserve the Description value -->
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.TicketId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.TicketId)
+            </dd>
+            <dt class="col-sm-2">
+                Sent By
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.SenderId == null)
+                {
+                    @:Deleted User
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.Sender.Name)
+                    @:
+                    @Html.DisplayFor(model => model.Sender.Surname)
+                    @:id:@Html.DisplayFor(model => model.SenderId)
+                }
+            </dd>
+            <dt class="col-sm-2">
+            </dt>
+            <dd class="col-sm-10">
+                <input class="form-check-input" type="checkbox" id="changeReceiver" name="changeReceiver" value="true" onchange="toggleEmployeeList()" />
+                <label for="changeReceiver">Pass to another employee?</label>
+                <div id="employeeList" style="display:none;">
+                    <select asp-for="ReceiverId" class="form-control">
+                        @foreach (var employee in ViewBag.Employees)
+                        {
+                            <option value="@employee.Value">@employee.Text</option>
+                        }
+                    </select>
+                </div>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Category)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Category)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Priority)
+            </dt>
+            <dd class="col-sm-10">
+                <select asp-for="Priority" class="form-control">
+                    @foreach (var priority in Enum.GetValues(typeof(TicketPriority)))
+                    {
+                        <option value="@priority">@priority</option>
+                    }
+                </select>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd class="col-sm-10">
+                <select asp-for="Status" class="form-control">
+                    @foreach (var status in Enum.GetValues(typeof(TicketStatus)))
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CreationDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CreationDate)
+            </dd>
+        </dl>
+        <div class="form-group">
+            <input type="submit" value="Update Ticket" class="btn btn-outline-success" />
+            <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+
+        </div>
+    </form>
+</div>
+<div class="d-flex justify-content-center">
+    <div class="button-container">
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        function toggleEmployeeList() {
+            var employeeList = document.getElementById('employeeList');
+            var checkbox = document.getElementById('changeReceiver');
+            employeeList.style.display = checkbox.checked ? 'block' : 'none';
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
