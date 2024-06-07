@@ -47,4 +47,8 @@
     <None Include="Views\Employees\EmployeeExist.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\File\" />
+  </ItemGroup>
+
 </Project>

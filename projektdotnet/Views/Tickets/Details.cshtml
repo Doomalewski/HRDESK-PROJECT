@@ -36,27 +36,36 @@
                 break;
             }
     </div>
+    <div class="m-2">
+        <a asp-controller="Tickets" asp-action="Index" class="btn btn-outline-primary btn-lg m-1">Go back to list</a>
+        @if(ViewBag.Role)
+        {
+            <a asp-controller="Tickets" asp-action="Manage" asp-route-id="@Model.TicketId" class="btn btn-outline-success btn-lg m-1">Manage</a>
+        }
+    </div>
     <h1 class="text-center mt-2" style="font-size: 2em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Comments</h1>
     @foreach(var TicketComment in Model.Comments)
     {
         @await Html.PartialAsync("_TicketComment", TicketComment);
 
     }
-    <button class="btn btn-outline-info btn-lg m-1" onclick="document.getElementById('commentForm').style.display='block'">Add Comment</button>
+    @if(Model.Status != TicketStatus.Resolved)
+    {
+        <button class="btn btn-outline-primary btn-lg m-1" onclick="document.getElementById('commentForm').style.display='block'">Add Comment</button>
+    }
 
     <div id="commentForm" style="display:none;">
         <form asp-controller="TicketComment" asp-action="Create" method="post">
             <input type="hidden" name="TicketId" value="@Model.TicketId" />
             <input type="hidden" name="EmployeeId" value="@ViewBag.userId" />
-                <label for="Description">Comment</label>
-                <textarea class="form-control" id="Description" name="Description" required></textarea>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('commentForm').style.display='none'">Cancel</button>
+            <div class="form-floating form-floating-outlined m-2 text-white">
+            <label class="address-outline text-white" for="Description">Comment</label>
+            <textarea class="form-control bg-transparent border-0 shadow-none text-white" id="Description" name="Description" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-outline-primary m-2">Submit</button>
+            <button type="button" class="btn btn-outline-danger m-2" onclick="document.getElementById('commentForm').style.display='none'">Cancel</button>
         </form>
     </div>
-    <div class="m-2">
-    <a asp-controller="Tickets" asp-action="Index" class="btn btn-outline-primary btn-lg m-1">Go back to list</a>
-    <a asp-controller="Tickets" asp-action="Manage" asp-route-id="@Model.TicketId" class="btn btn-outline-success btn-lg m-1">Manage</a>
-    </div>
+
 </div>
 

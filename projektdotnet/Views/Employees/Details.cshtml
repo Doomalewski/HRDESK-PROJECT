@@ -47,7 +47,7 @@
 
             </dl>
             <div>
-                
+
                 <img id="profilePicture"
                      src="@($"/Files/{Model.Login}profilepicture.jpg")"
                      alt="Profile Picture"
@@ -56,5 +56,20 @@
             </div>
         </div>
     </div>
-    <a asp-controller="File" asp-action="UploadFile" class="btn btn-outline-primary">Change Profile Picture</a>
+    <a href="javascript:void(0);" class="btn btn-outline-primary" onclick="toggleUploadForm()">Change Profile Picture</a>
+    <div id="uploadFileForm" style="display:none;">
+        @await Html.PartialAsync("UploadFile")
+    </div>
+
 </div>
+
+<script>
+    function toggleUploadForm() {
+        var form = document.getElementById('uploadFileForm');
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+</script>

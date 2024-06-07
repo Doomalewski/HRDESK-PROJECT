@@ -91,6 +91,7 @@ namespace projektdotnet.Controllers
             }
 
             var user = await _employeeService.GetEmployeeFromHttp();
+            ViewBag.Role = user.Roles.Any(r => r.Name == "HR");
             ViewBag.userId = user.EmployeeId;
             if (!user.SentTickets.Any(e => e.TicketId == id) && !user.ReceivedTickets.Any(e => e.TicketId == id))
             {
