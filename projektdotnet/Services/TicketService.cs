@@ -71,21 +71,21 @@ namespace projektdotnet.Services
             }
             return await _ticketRepository.GetTicketById(id);
         }
-        public async Task UpdateTicket(Ticket ticket)
+        public async Task<Ticket> UpdateTicket(Ticket ticket)
         {
-            await _ticketRepository.UpdateTicket(ticket);
+            return await _ticketRepository.UpdateTicket(ticket);
         }
-        public async Task AddTicket(Ticket ticket)
+        public async Task<Ticket> AddTicket(Ticket ticket)
         {
-            await _ticketRepository.AddTicket(ticket);
+            return await _ticketRepository.AddTicket(ticket);
         }
         public async Task<bool> TicketExists(int id)
         {
             return await _ticketRepository.TicketExists(id);
         }
-        public async Task RemoveTicket(Ticket ticket)
+        public async Task<bool> RemoveTicket(Ticket ticket)
         {
-            await _ticketRepository.RemoveTicket(ticket);
+            return await _ticketRepository.RemoveTicket(ticket);
         }
         public async Task<List<Ticket>> GetAllTickets()
         {

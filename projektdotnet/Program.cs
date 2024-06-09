@@ -40,6 +40,16 @@ namespace projektdotnet
             builder.Services.AddTransient<TicketService>();
             builder.Services.AddTransient<EmployeeService>();
             builder.Services.AddTransient<EmailService>();
+            builder.Services.AddTransient<TicketCommentService>();
+            builder.Services.AddTransient<RoomService>();
+            builder.Services.AddTransient<OpinionService>();
+            builder.Services.AddTransient<EmailService>();
+            builder.Services.AddTransient<MeetingService>();
+
+            builder.Services.AddTransient<MeetingRepository>();
+            builder.Services.AddTransient<TicketCommentRepository>();
+            builder.Services.AddTransient<OpinionRepository>();
+            builder.Services.AddTransient<RoomRepository>();
             builder.Services.AddTransient<EmployeeRepository>();
             builder.Services.AddTransient<TicketRepository>();
             builder.Services.AddTransient<RoleRepository>();

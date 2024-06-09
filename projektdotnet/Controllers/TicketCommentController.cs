@@ -1,28 +1,31 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+﻿using Microsoft.AspNetCore.Mvc;
 using projektdotnet.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc;
-using projektdotnet.Data;
+using projektdotnet.Services;
+using System.Threading.Tasks;
+
 namespace projektdotnet.Controllers
 {
     public class TicketCommentController : Controller
     {
-        private readonly NewDbContext _context;
-        public TicketCommentController(NewDbContext context)
+        private readonly TicketCommentService _ticketCommentService;
+        private readonly TicketService _ticketService;  // Assuming there's a TicketService for fetching ticket details
+
+        public TicketCommentController(TicketCommentService ticketCommentService, TicketService ticketService)
         {
-            _context = context;
+            _ticketCommentService = ticketCommentService;
+            _ticketService = ticketService;
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([Bind("TicketId,EmployeeId,Description")] TicketComment comment)
         {
             if (ModelState.IsValid)
             {
-                var ticket = _context.Tickets.FirstOrDefault(e => e.TicketId == comment.TicketId);
+                var ticket = await _ticketService.GetTicketById(comment.TicketId);
                 if (ticket != null)
                 {
                     comment.CreationDate = DateTime.Now;
-                    _context.TicketComments.Add(comment);
-                    await _context.SaveChangesAsync();
+                    await _ticketCommentService.AddComment(comment);
                     return RedirectToAction("Details", "Tickets", new { id = comment.TicketId });
                 }
                 else

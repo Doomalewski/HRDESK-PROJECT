@@ -6,28 +6,30 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using projektdotnet.Data;
 using projektdotnet.Models;
 using projektdotnet.Services;
+using SendGrid.Helpers.Mail;
 
 namespace projektdotnet.Controllers
 {
     public class OpinionsController : Controller
     {
-        private readonly NewDbContext _context;
         private readonly EmployeeService _employeeService;
+        private readonly OpinionService _opinionService;
 
-        public OpinionsController(NewDbContext context,EmployeeService employeeService)
+        public OpinionsController(EmployeeService employeeService,OpinionService opinionService)
         {
-            _context = context;
             _employeeService = employeeService;
+            _opinionService = opinionService;
         }
 
         [Authorize(Roles = "HR")]
         // GET: Opinions
         public async Task<IActionResult> Index()
         {
-            var newDbContext = await _context.Opinions.Include(o => o.Employee).ToListAsync();
+            var newDbContext = await _opinionService.GetAllOpinions();
             return View(newDbContext);
         }
         [Authorize(Roles = "HR")]
@@ -39,9 +41,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var opinion = await _context.Opinions
-                .Include(o => o.Employee)
-                .FirstOrDefaultAsync(m => m.OpinionId == id);
+            var opinion = await _opinionService.GetOpinionById(id);
             if (opinion == null)
             {
                 return NotFound();
@@ -70,8 +70,6 @@ namespace projektdotnet.Controllers
                 opinion.Employee = null;
                 if (ModelState.IsValid)
                 {
-                    _context.Add(opinion);
-                    await _context.SaveChangesAsync();
                     return RedirectToAction("Index","Home");
                 }
             }
@@ -79,8 +77,7 @@ namespace projektdotnet.Controllers
             opinion.EmployeeId = user.EmployeeId;
             if (ModelState.IsValid)
             {
-                _context.Add(opinion);
-                await _context.SaveChangesAsync();
+                await _opinionService.AddOpinion(opinion);
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction("Index","Home");
@@ -95,12 +92,12 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var opinion = await _context.Opinions.FindAsync(id);
+            var opinion = await _opinionService.GetOpinionById(id);
             if (opinion == null)
             {
                 return NotFound();
             }
-            var AllEmployees = _context.Employees;
+            var AllEmployees = await _employeeService.GetAllEmployees();
             ViewData["allEmployees"] = new SelectList(AllEmployees, "EmployeeId", "Login");
             return View(opinion);
         }
@@ -122,12 +119,11 @@ namespace projektdotnet.Controllers
             {
                 try
                 {
-                    _context.Update(opinion);
-                    await _context.SaveChangesAsync();
+                    await _opinionService.UpdateOpinion(opinion);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OpinionExists(opinion.OpinionId))
+                    if (!await _opinionService.OpinionExists(opinion.OpinionId))
                     {
                         return NotFound();
                     }
@@ -138,7 +134,8 @@ namespace projektdotnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Discriminator", opinion.EmployeeId);
+            var AllEmployees = await _employeeService.GetAllEmployees();
+            ViewData["EmployeeId"] = new SelectList(AllEmployees, "EmployeeId", "Discriminator", opinion.EmployeeId);
             return View(opinion);
         }
 
@@ -151,9 +148,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var opinion = await _context.Opinions
-                .Include(o => o.Employee)
-                .FirstOrDefaultAsync(m => m.OpinionId == id);
+            var opinion = await _opinionService.GetOpinionById(id);
             if (opinion == null)
             {
                 return NotFound();
@@ -167,19 +162,12 @@ namespace projektdotnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var opinion = await _context.Opinions.FindAsync(id);
+            var opinion = await _opinionService.GetOpinionById(id);
             if (opinion != null)
             {
-                _context.Opinions.Remove(opinion);
+                await _opinionService.RemoveOpinion(opinion.OpinionId);
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool OpinionExists(int id)
-        {
-            return _context.Opinions.Any(e => e.OpinionId == id);
         }
     }
 }

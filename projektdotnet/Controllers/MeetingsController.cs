@@ -17,12 +17,14 @@ namespace projektdotnet.Controllers
 {
     public class MeetingsController : Controller
     {
-        private readonly NewDbContext _context;
         private readonly EmployeeService _employeeService;
-        public MeetingsController(NewDbContext context,EmployeeService employeeService)
+        private readonly MeetingService _meetingService;
+        private readonly RoomService _roomService;
+        public MeetingsController(EmployeeService employeeService, MeetingService meetingService,RoomService roomService)
         {
+            _roomService = roomService;
             _employeeService = employeeService;
-            _context = context;
+            _meetingService = meetingService;
         }
 
         // GET: Meetings
@@ -30,23 +32,21 @@ namespace projektdotnet.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _employeeService.GetEmployeeFromHttp();
-            var newDbContext = await _context.Meetings.Include(m => m.room).Where(e=>e.Participants.Any(e=>e.EmployeeId==user.EmployeeId)).OrderBy(e=>e.StartingTime).ToListAsync();
+            var newDbContext = await _meetingService.GetMeetingsWithParticipant(user.EmployeeId);
             return View(newDbContext);
         }
         [HttpPost]
         [Authorize(Roles = "NORMAL")]
         public async Task<IActionResult> LeaveMeeting(int id)
         {
-            var meeting = await _context.Meetings.Where(m => m.MeetingId == id).FirstOrDefaultAsync();
+            var meeting = await _meetingService.GetMeetingById(id);
             var user = await _employeeService.GetEmployeeFromHttp();
 
             user.Meetings.Remove(meeting);
             meeting.Participants.Remove(user);
 
-            _context.Employees.Update(user);
-            _context.Meetings.Update(meeting);
-
-            await _context.SaveChangesAsync();
+            await _employeeService.UpdateEmployee(user);
+            await _meetingService.UpdateMeeting(meeting);
 
             return RedirectToAction("Index");
         }
@@ -59,10 +59,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
-                .Include(m => m.room)
-                .Include(m=>m.Participants)
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = await _meetingService.GetMeetingById(id);
             if (meeting == null)
             {
                 return NotFound();
@@ -73,12 +70,14 @@ namespace projektdotnet.Controllers
 
         // GET: Meetings/Create
         [Authorize(Roles = "NORMAL")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "Name");
-            ViewBag.AllEmployees = _context.Employees.ToList();
+            var rooms = await _roomService.GetAllRooms();
+            ViewData["RoomId"] = new SelectList(rooms , "RoomId", "Name");
+            ViewBag.AllEmployees = await _employeeService.GetAllEmployees();
             return View();
         }
+
         [Authorize(Roles = "NORMAL")]
         public async Task<IActionResult> Add(int? id)
         {
@@ -87,10 +86,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
-                .Include(m => m.room)
-                .Include(m => m.Participants)
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = await _meetingService.GetMeetingById(id);
 
             if (meeting == null)
             {
@@ -98,10 +94,10 @@ namespace projektdotnet.Controllers
             }
 
             var participantIds = meeting.Participants.Select(p => p.EmployeeId);
-
-            ViewBag.EmployeesNotParticipating = await _context.Employees
-                .Where(employee => !participantIds.Contains(employee.EmployeeId))
-                .ToListAsync();
+            var employees = await _employeeService.GetAllEmployees();
+            var employeesNotParticipating = employees
+                .Where(employee => !participantIds.Contains(employee.EmployeeId));
+            ViewBag.EmployeesNotParticipating = employeesNotParticipating;
 
             return View(meeting);
         }
@@ -111,9 +107,7 @@ namespace projektdotnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int id, int[] selectedEmployees)
         {
-            var meeting = await _context.Meetings
-                .Include(m => m.Participants)
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = await _meetingService.GetMeetingById(id);
 
             if (meeting == null)
             {
@@ -122,19 +116,13 @@ namespace projektdotnet.Controllers
 
             if (selectedEmployees != null && selectedEmployees.Any())
             {
-                // Pobierz pracowników na podstawie wybranych identyfikatorów
-                var employeesToAdd = await _context.Employees
-                    .Where(e => selectedEmployees.Contains(e.EmployeeId))
-                    .ToListAsync();
+                var employees = await _employeeService.GetAllEmployees();
+                var employeesToAdd = employees
+                    .Where(e => selectedEmployees.Contains(e.EmployeeId));
 
-                // Dodaj wybranych pracowników do spotkania
                 meeting.Participants.AddRange(employeesToAdd);
-
-                // Zapisz zmiany w bazie danych
-                await _context.SaveChangesAsync();
+                await _meetingService.UpdateMeeting(meeting);
             }
-
-            // Przekieruj użytkownika do widoku szczegółów spotkania
             return RedirectToAction(nameof(Details), new { id = id });
         }
 
@@ -146,12 +134,13 @@ namespace projektdotnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MeetingId,RoomId,Title,Description,StartingTime,EndingTime")] Meeting meeting, int[] selectedEmployees)
         {
-            Room room = _context.Rooms.First(r => r.RoomId == meeting.RoomId);
+            Room room = await _roomService.GetRoomById(meeting.RoomId);
             meeting.room = room;
 
             if (selectedEmployees != null && selectedEmployees.Any())
             {
-                meeting.Participants = _context.Employees.Where(e => selectedEmployees.Contains(e.EmployeeId)).ToList();
+                var employees = await _employeeService.GetAllEmployees();
+                meeting.Participants = employees.Where(e => selectedEmployees.Contains(e.EmployeeId)).ToList();
                 foreach(var employee in meeting.Participants)
                 {
                     employee.Meetings.Add(meeting);
@@ -160,13 +149,12 @@ namespace projektdotnet.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(meeting);
-                await _context.SaveChangesAsync();
+                await _meetingService.AddMeeting(meeting);
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId", meeting.RoomId);
-            ViewBag.AllEmployees = _context.Employees.ToList();
+            var rooms = await _roomService.GetAllRooms();
+            ViewData["RoomId"] = new SelectList(rooms, "RoomId", "RoomId", meeting.RoomId);
+            ViewBag.AllEmployees = _employeeService.GetAllEmployees();
 
             return View(meeting);
         }
@@ -179,16 +167,13 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
-                .Include(m => m.room)
-                .Include(m => m.Participants)
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = await _meetingService.GetMeetingById(id);
             if (meeting == null)
             {
                 return NotFound();
             }
-            var rooms = _context.Rooms;
-            ViewBag.AllEmployees = _context.Employees.ToList();
+            var rooms = await _roomService.GetAllRooms();
+            ViewBag.AllEmployees = _employeeService.GetAllEmployees();
             ViewData["RoomId"] = new SelectList(rooms, "RoomId", "RoomId");
             return View(meeting);
         }
@@ -206,9 +191,7 @@ namespace projektdotnet.Controllers
             }
 
             // Pobierz istniejące spotkanie z bazy danych wraz z uczestnikami
-            var existingMeeting = await _context.Meetings
-                .Include(m => m.Participants)
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var existingMeeting = await _meetingService.GetMeetingById(id);
 
             if (existingMeeting == null)
             {
@@ -225,7 +208,8 @@ namespace projektdotnet.Controllers
             // Obsłuż dodawanie i usuwanie uczestników
             if (selectedEmployees != null && selectedEmployees.Any())
             {
-                var employeesToAdd = _context.Employees.Where(e => selectedEmployees.Contains(e.EmployeeId)).ToList();
+                var employees = await _employeeService.GetAllEmployees();
+                var employeesToAdd = employees.Where(e => selectedEmployees.Contains(e.EmployeeId)).ToList();
                 existingMeeting.Participants.AddRange(employeesToAdd);
 
                 foreach (var employee in employeesToAdd)
@@ -251,12 +235,11 @@ namespace projektdotnet.Controllers
             {
                 try
                 {
-                    _context.Update(existingMeeting);
-                    await _context.SaveChangesAsync();
+                    await _meetingService.UpdateMeeting(existingMeeting);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetingExists(meeting.MeetingId))
+                    if (!await _meetingService.MeetingExists(meeting.MeetingId))
                     {
                         return NotFound();
                     }
@@ -267,7 +250,8 @@ namespace projektdotnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId", meeting.RoomId);
+            var rooms = await _roomService.GetAllRooms();
+            ViewData["RoomId"] = new SelectList(rooms, "RoomId", "RoomId", meeting.RoomId);
             return View(meeting);
         }
 
@@ -280,9 +264,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
-                .Include(m => m.room)
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = await _meetingService.GetMeetingById(id);
             if (meeting == null)
             {
                 return NotFound();
@@ -296,19 +278,12 @@ namespace projektdotnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var meeting = await _context.Meetings.FindAsync(id);
+            var meeting = await _meetingService.GetMeetingById(id);
             if (meeting != null)
             {
-                _context.Meetings.Remove(meeting);
+                await _meetingService.RemoveMeeting(meeting);
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool MeetingExists(int id)
-        {
-            return _context.Meetings.Any(e => e.MeetingId == id);
         }
     }
 }

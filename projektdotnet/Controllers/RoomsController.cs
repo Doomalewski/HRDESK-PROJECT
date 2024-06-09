@@ -6,25 +6,25 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using projektdotnet.Data;
 using projektdotnet.Models;
+using projektdotnet.Services;
 
 namespace projektdotnet.Controllers
 {
     public class RoomsController : Controller
     {
-        private readonly NewDbContext _context;
+        private readonly RoomService _roomService;
 
-        public RoomsController(NewDbContext context)
+        public RoomsController(RoomService roomService)
         {
-            _context = context;
+            _roomService = roomService;
         }
 
         // GET: Rooms
         [Authorize(Roles = "HR")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Rooms.ToListAsync());
+            return View(await _roomService.GetAllRooms());
         }
 
         // GET: Rooms/Details/5
@@ -36,8 +36,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.RoomId == id);
+            var room = await _roomService.GetRoomById(id);
             if (room == null)
             {
                 return NotFound();
@@ -63,8 +62,7 @@ namespace projektdotnet.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(room);
-                await _context.SaveChangesAsync();
+                await _roomService.AddRoom(room);
                 return RedirectToAction(nameof(Index));
             }
             return View(room);
@@ -79,7 +77,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms.FindAsync(id);
+            var room = await _roomService.GetRoomById(id);
             if (room == null)
             {
                 return NotFound();
@@ -104,12 +102,11 @@ namespace projektdotnet.Controllers
             {
                 try
                 {
-                    _context.Update(room);
-                    await _context.SaveChangesAsync();
+                    await _roomService.UpdateRoom(room);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RoomExists(room.RoomId))
+                    if (!await _roomService.RoomExists(room.RoomId))
                     {
                         return NotFound();
                     }
@@ -132,8 +129,7 @@ namespace projektdotnet.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.RoomId == id);
+            var room = await _roomService.GetRoomById(id);
             if (room == null)
             {
                 return NotFound();
@@ -148,19 +144,13 @@ namespace projektdotnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
-            if (room != null)
-            {
-                _context.Rooms.Remove(room);
-            }
-
-            await _context.SaveChangesAsync();
+            await _roomService.RemoveRoom(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RoomExists(int id)
+        private async Task<bool> RoomExists(int id)
         {
-            return _context.Rooms.Any(e => e.RoomId == id);
+            return await _roomService.RoomExists(id);
         }
     }
 }

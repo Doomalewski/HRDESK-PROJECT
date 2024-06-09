@@ -31,15 +31,17 @@ namespace projektdotnet.Repositories
                 .Where(t => t.ReceiverId == id)
                 .ToListAsync();
         }
-        public async Task AddTicket(Ticket ticket)
+        public async Task <Ticket> AddTicket(Ticket ticket)
         {
             _context.Add(ticket);
             await _context.SaveChangesAsync();
+            return ticket;
         }
-        public async Task UpdateTicket(Ticket ticket)
+        public async Task<Ticket> UpdateTicket(Ticket ticket)
         {
             _context.Tickets.Update(ticket);
             await _context.SaveChangesAsync();
+            return ticket;
         }
         public async Task<Ticket> GetTicketById(int? id)
         {
@@ -57,10 +59,15 @@ namespace projektdotnet.Repositories
         {
             return await _context.Tickets.AnyAsync(e => e.TicketId == id);
         }
-        public async Task RemoveTicket(Ticket ticket)
+        public async Task<bool> RemoveTicket(Ticket ticket)
         {
+            if (ticket == null)
+            {
+                return false;
+            }
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
+            return true;
         }
         public async Task<List<Ticket>> GetAllTickets()
         {

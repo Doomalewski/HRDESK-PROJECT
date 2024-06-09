@@ -15,18 +15,18 @@ namespace projektdotnet.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly NewDbContext _context;
+        private readonly MeetingService _meetingService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly EmployeeService _employeeService;
         private readonly IConfiguration _configuration;
 
-        public HomeController(IConfiguration configuration,ILogger<HomeController> logger, NewDbContext context, IHttpContextAccessor httpContextAccessor, EmployeeService employeeService)
+        public HomeController(IConfiguration configuration,ILogger<HomeController> logger,MeetingService meetingService, IHttpContextAccessor httpContextAccessor, EmployeeService employeeService)
         {
             _logger = logger;
-            _context = context;
             _httpContextAccessor = httpContextAccessor;
             _employeeService = employeeService;
             _configuration = configuration;
+            _meetingService = meetingService;
         }
         [Authorize(Roles = "NORMAL")]
         public IActionResult FAQ()
@@ -40,7 +40,7 @@ namespace projektdotnet.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password, string ReturnUrl)
         {
-            var employee = _context.Employees.Include(e => e.Roles).Where(e => e.Login == username).FirstOrDefault();
+            var employee = await _employeeService.GetEmployeeByUsername(username);
             if (employee == null)
             {
                 return View();
@@ -82,9 +82,7 @@ namespace projektdotnet.Controllers
         {
             
             var User = await _employeeService.GetEmployeeFromHttp();
-            var todaysMeetings = _context.Meetings
-                .Where(e => e.StartingTime.Date == DateTime.Today && e.Participants.Any(p => p.EmployeeId == User.EmployeeId))
-                .ToList();
+            var todaysMeetings = await _meetingService.GetTodaysMeetingsForEmployee(User.EmployeeId);
             if (User.Roles.Any(r => r.Name == "HR"))
             {
                 return View("IndexHR",todaysMeetings);

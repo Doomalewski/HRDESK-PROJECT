@@ -12,6 +12,8 @@
             <div class="card-text text-white">@Model.Category</div>
             <div class="text-white mb-1 mt-1">Description</div>
             <div class="card-text text-white">@Model.Description</div>
+        <div class="text-white mb-1 mt-1">Creation date</div>
+        <div class="card-text text-white">@Model.CreationDate</div>
             <div class="text-white mb-1 mt-1">Employee handling</div>
         <div>
             @await Html.PartialAsync("_EmployeeDetails", Model.Receiver)

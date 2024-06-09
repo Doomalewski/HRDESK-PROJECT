@@ -1,9 +1,9 @@
 ﻿namespace projektdotnet.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-
-    public class TicketComment
+public class TicketComment
     {
         [Key]
         public int TicketCommentId { get; set; }
@@ -14,7 +14,8 @@ using System.ComponentModel.DataAnnotations.Schema;
         [Required]
         [ForeignKey("EmployeeId")]
         public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        [JsonIgnore]
+    public Employee Employee { get; set; }
         [Required]
         public DateTime CreationDate { get; set; }
 

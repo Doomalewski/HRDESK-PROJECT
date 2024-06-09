@@ -23,7 +23,10 @@ namespace projektdotnet.Services
             _roleRepository = roleRepository;
             _configuration = configuration;
         }
-
+        public async Task<Employee> GetEmployeeByUsername(string username)
+        {
+            return await _employeeRepository.GetEmployeeByUsername(username);    
+        }
         public async Task<List<Employee>> GetAllEmployees()
         {
             return  await _employeeRepository.GetAllEmployees();

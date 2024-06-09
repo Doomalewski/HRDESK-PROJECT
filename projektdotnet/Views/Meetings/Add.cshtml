@@ -1,37 +1,34 @@
 ﻿@model projektdotnet.Models.Meeting
-
+@{
+    Layout = "~/Views/Shared/_OtherLayout.cshtml";
+}
 @{
     ViewData["Title"] = "Add";
 }
-
-<h1>Add</h1>
-
-<h4>Meeting</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    <div class="main-content-center">
         <form asp-action="Add">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label>Select Employees:</label>
-                @foreach (var employee in ViewBag.EmployeesNotParticipating)
+            <div class="card">
+            <h1 style="font-size: 3em;text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5)">Select employees</h1>
+            @foreach (var employee in ViewBag.EmployeesNotParticipating as IEnumerable<Employee>)
                 {
                     <div>
-                        <input type="checkbox" name="selectedEmployees" value="@employee.EmployeeId" />
-                        <label>@employee.Login</label>
+                    <input class ="form-check-input mt-3 m-1" type="checkbox" name="selectedEmployees" value="@employee.EmployeeId" />
+                    <label>@await Html.PartialAsync("_EmployeeDetails", employee)</label>
+
                     </div>
                 }
+                <div class="form-group">
+                    <input type="submit" value="Add" class="btn btn-outline-primary m-2" />
+                </div>
+            <div>
+                <a class="btn btn-outline-primary m-2" asp-action="Details" asp-route-id="@Model.MeetingId">Back to meeting</a>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{
