@@ -175,12 +175,10 @@ namespace projektdotnet.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var employee = await _employeeService.GetEmployeeById(id);
-            //setting SenderId in SentTickets for null
             await _ticketService.NullifySenderTickets(employee);
 
             if (employee != null)
             {
-                //if HR employee deleted then move his Received tickets
                 if (employee.Roles.Any(r => r.Name == "HR"))
                 {
                     await _ticketService.MoveReceivedTickets(employee);

@@ -28,7 +28,7 @@ namespace projektdotnet.Data
                 .HasOne(t => t.Sender)
                 .WithMany(s => s.SentTickets)
                 .HasForeignKey(t => t.SenderId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Ticket>()
                 .HasOne(t => t.Receiver)

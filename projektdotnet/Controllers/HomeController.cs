@@ -29,6 +29,7 @@ namespace projektdotnet.Controllers
             _meetingService = meetingService;
         }
         [Authorize(Roles = "NORMAL")]
+        [Route("FrequentlyAskedQuestions")]
         public IActionResult FAQ()
         {
             return View();

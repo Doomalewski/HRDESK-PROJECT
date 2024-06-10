@@ -3,9 +3,6 @@
 @{
     Layout = "~/Views/Shared/_OtherLayout.cshtml";
 }
-@{
-    ViewData["Title"] = "Create";
-}
 
 
 <div class="row">
@@ -43,7 +40,7 @@
                         Select Employees:
                     </strong>
                 </label>
-                @foreach (var employee in ViewBag.AllEmployees)
+                @foreach (var employee in ViewBag.AllEmployees as IEnumerable<Employee>)
                 {
                     <div>
                         <input class="form-check-input" type="checkbox" name="selectedEmployees" value="@employee.EmployeeId" />

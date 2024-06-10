@@ -62,9 +62,10 @@
     <div>
         <a asp-action="Index" class="btn btn-outline-primary btn-lg m-3">Back to List</a>
         <a asp-action="Add" asp-route-id="@Model.MeetingId" class="btn btn-outline-primary btn-lg m-3">Add participant</a>
-        <button type="submit" class="btn btn-outline-danger btn-lg m-3">Leave meeting</button>
     </div>
     <form asp-action="LeaveMeeting" asp-route-id="@Model.MeetingId" method="post">
+        <button type="submit" class="btn btn-outline-danger btn-lg m-3">Leave meeting</button>
+
     </form>
 
 

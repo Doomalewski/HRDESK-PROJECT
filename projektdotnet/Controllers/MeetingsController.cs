@@ -74,7 +74,8 @@ namespace projektdotnet.Controllers
         {
             var rooms = await _roomService.GetAllRooms();
             ViewData["RoomId"] = new SelectList(rooms , "RoomId", "Name");
-            ViewBag.AllEmployees = await _employeeService.GetAllEmployees();
+            var AllEmployees = await _employeeService.GetAllEmployees();
+            ViewBag.AllEmployees = AllEmployees;
             return View();
         }
 
